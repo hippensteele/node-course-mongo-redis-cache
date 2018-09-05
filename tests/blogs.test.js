@@ -1,18 +1,10 @@
 const Page = require('./helpers/page');
 
-if (process.env.NODE_ENV === 'production') {
-  const PORT = process.env.PORT || 5000;
-} else if (process.env.NODE_ENV === 'ci') {
-  const PORT = process.env.PORT || 5000;
-} else {
-  const PORT = 5000;
-}
-
 let page;
 
 beforeEach( async () => {
     page = await Page.build();
-    await page.goto(`http://localhost:${PORT}`);
+    await page.goto('http://localhost:5000');
 });
 
 afterEach( async () => {
