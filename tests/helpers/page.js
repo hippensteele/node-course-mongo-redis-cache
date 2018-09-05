@@ -2,15 +2,7 @@ const puppeteer = require('puppeteer');
 
 const sessionFactory = require('../factories/sessionFactory');
 const userFactory = require('../factories/userFactory');
-
-let PORT;
-if (process.env.NODE_ENV === 'production') {
-  PORT = process.env.PORT || 5000;
-} else if (process.env.NODE_ENV === 'ci') {
-  PORT = process.env.PORT || 5000;
-} else {
-  PORT = 8080;
-};
+const {PORT} = require('./port');
 
 class CustomPage {
     static async build() {
