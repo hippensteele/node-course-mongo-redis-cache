@@ -40,12 +40,13 @@ if (['production', 'ci'].includes(process.env.NODE_ENV)) {
 // // const PORT = process.env.PORT || 5000;
 // const PORT = 5000;
 
+let PORT= 5000;
 if (process.env.NODE_ENV === 'production') {
-  const PORT = process.env.PORT || 5000;
+  PORT = process.env.PORT || 5000;
 } else if (process.env.NODE_ENV === 'ci') {
-  const PORT = process.env.PORT || 5000;
+  PORT = process.env.PORT || 5000;
 } else {
-  const PORT = 5000;
+  PORT = 5000;
 }
 
 app.listen(PORT, () => {
