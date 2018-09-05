@@ -28,7 +28,7 @@ app.use(passport.session());
 require('./routes/authRoutes')(app);
 require('./routes/blogRoutes')(app);
 
-if (['production'].includes(process.env.NODE_ENV)) {
+if (['production', 'ci'].includes(process.env.NODE_ENV)) {
   app.use(express.static('client/build'));
 
   const path = require('path');
@@ -37,8 +37,17 @@ if (['production'].includes(process.env.NODE_ENV)) {
   });
 }
 
-// const PORT = process.env.PORT || 5000;
-const PORT = 5000;
+// // const PORT = process.env.PORT || 5000;
+// const PORT = 5000;
+
+if (process.env.NODE_ENV === 'production') {
+  const PORT = process.env.PORT || 5000;
+} else if (process.env.NODE_ENV === 'ci') {
+  const PORT = process.env.PORT || 5000;
+} else {
+  const PORT = 5000;
+}
+
 app.listen(PORT, () => {
   console.log(`Listening on port`, PORT);
 });
