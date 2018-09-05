@@ -3,6 +3,14 @@ const puppeteer = require('puppeteer');
 const sessionFactory = require('../factories/sessionFactory');
 const userFactory = require('../factories/userFactory');
 
+if (process.env.NODE_ENV === 'production') {
+  const PORT = process.env.PORT || 5000;
+} else if (process.env.NODE_ENV === 'ci') {
+  const PORT = process.env.PORT || 5000;
+} else {
+  const PORT = 5000;
+}
+
 class CustomPage {
     static async build() {
         const browser = await puppeteer.launch({
@@ -25,7 +33,7 @@ class CustomPage {
         const { session, sig } = sessionFactory(user);
         await this.page.setCookie({ name: 'session', value: session });
         await this.page.setCookie({ name: 'session.sig', value: sig });
-        await this.page.goto('http://localhost:8080/blogs');
+        await this.page.goto(`http://localhost:${PORT}/blogs`);
         await this.page.waitFor('a[href="/auth/logout"]');
     }
     async getContentsOf(selector){
