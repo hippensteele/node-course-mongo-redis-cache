@@ -1,7 +1,13 @@
 const mongoose = require('mongoose');
 const requireLogin = require('../middlewares/requireLogin');
-
 const Blog = mongoose.model('Blog');
+
+const AWS = require('aws-sdk');
+const keys = require('../config/keys');
+const s3 = new AWS.S3({
+    accessKeyId: keys.accessKeyId,
+    secretAccessKey: keys.secretAccessKey
+})
 
 const cleanCache = require('../middlewares/cleanCache');
 
@@ -11,8 +17,17 @@ module.exports = app => {
       _user: req.user.id,
       _id: req.params.id
     });
-
-    res.send(blog);
+    s3.getSignedUrl('getObject', {
+        Bucket: 'hippensteele-blog',
+        Key: blog.imageUrl,
+        Expires: 60
+    }, (err, url) => {
+      if (err){
+        return res.status(400).send(err);
+      };
+      blog.imageUrl = url;
+      res.send(blog);
+    }); 
   });
 
   app.get('/api/blogs', requireLogin, cleanCache, async (req, res) => {
@@ -21,11 +36,12 @@ module.exports = app => {
   });
 
   app.post('/api/blogs', requireLogin, async (req, res) => {
-    const { title, content } = req.body;
+    const { title, content, imageUrl } = req.body;
 
     const blog = new Blog({
       title,
       content,
+      imageUrl,
       _user: req.user.id
     });
 
